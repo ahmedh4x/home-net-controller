@@ -110,12 +110,20 @@ def test_cli_rename_device():
     devices = json.loads(out_buf.getvalue())
     assert len(devices) > 0
     target_mac = devices[0]["mac"]
+    original_name = devices[0]["name"]
 
-    # Rename it
-    rename_buf = io.StringIO()
-    with redirect_stdout(rename_buf):
-        main(["rename", target_mac, "Test-Renamed-Device", "--json"])
-    result = json.loads(rename_buf.getvalue())
-    assert result["success"] is True
-    assert result["display_name"] == "Test-Renamed-Device"
+    try:
+        # Rename it
+        rename_buf = io.StringIO()
+        with redirect_stdout(rename_buf):
+            main(["rename", target_mac, "Test-Renamed-Device", "--json"])
+        result = json.loads(rename_buf.getvalue())
+        assert result["success"] is True
+        assert result["display_name"] == "Test-Renamed-Device"
+    finally:
+        # Restore original name
+        restore_buf = io.StringIO()
+        with redirect_stdout(restore_buf):
+            main(["rename", target_mac, original_name, "--json"])
+
 

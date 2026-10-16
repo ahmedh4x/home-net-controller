@@ -453,11 +453,7 @@ def main(args=None):
             scope = DomainScope.GLOBAL
             if parsed.device:
                 scope = DomainScope.DEVICE
-                matched_dev = None
-                for d in device_service.get_all_devices():
-                    if parsed.device.lower() in (d.primary_mac.lower(), d.device_guid.lower(), d.display_name.lower()):
-                        matched_dev = d
-                        break
+                matched_dev = find_device(parsed.device)
                 if not matched_dev:
                     print(f"Error: Target device '{parsed.device}' not found.")
                     sys.exit(1)

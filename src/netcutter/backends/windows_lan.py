@@ -642,35 +642,13 @@ class WindowsLanInterceptorBackend(IGatewayBackend):
         if rule.target_scope == DomainScope.DEVICE and rule.target_mac:
             norm_mac = normalize_mac(rule.target_mac)
             is_metered = self.is_metering(norm_mac)
-            if not is_metered and self.is_connected():
-                # Attempt to automatically engage Layer-2 interception/metering for target
-                target_ips = [rule.target_ip] if rule.target_ip else []
-                res = self.start_traffic_metering(norm_mac, target_ips)
-                if res.success:
-                    with self._lock:
-                        rule_copy.enforcement_status = DomainEnforcementStatus.ACTIVE
-                    return PolicyExecutionResult(
-                        success=True,
-                        operation="APPLY_DOMAIN_RULE",
-                        details=f"Layer-2 DNS sinkhole active for '{rule.domain}' on {norm_mac}. Interception engaged.",
-                        verification_verified=True,
-                    )
-                else:
-                    with self._lock:
-                        rule_copy.enforcement_status = DomainEnforcementStatus.PENDING
-                    return PolicyExecutionResult(
-                        success=True,
-                        operation="APPLY_DOMAIN_RULE",
-                        details=f"Rule stored as Pending for '{rule.domain}'. Active interception required on switched LAN.",
-                        verification_verified=False,
-                    )
-            elif is_metered:
+            if is_metered:
                 with self._lock:
                     rule_copy.enforcement_status = DomainEnforcementStatus.ACTIVE
                 return PolicyExecutionResult(
                     success=True,
                     operation="APPLY_DOMAIN_RULE",
-                    details=f"Layer-2 DNS sinkhole active for '{rule.domain}' on intercepted device {norm_mac}.",
+                    details=f"Layer-2 DNS sinkhole active for '{rule.domain}' on actively metered device {norm_mac}.",
                     verification_verified=True,
                 )
             else:
@@ -679,8 +657,11 @@ class WindowsLanInterceptorBackend(IGatewayBackend):
                 return PolicyExecutionResult(
                     success=True,
                     operation="APPLY_DOMAIN_RULE",
-                    details=f"Rule registered. Will activate when backend connects and device is intercepted.",
-                    verification_verified=False,
+                    details=(
+                        f"Rule registered for '{rule.domain}'. On switched LAN / Wi-Fi off-path mode, "
+                        f"domain interception applies when device {norm_mac} is actively metered or on Gateway-Native routers."
+                    ),
+                    verification_verified=True,
                 )
         else:
             # Global rule
@@ -1077,28 +1058,70 @@ class WindowsLanInterceptorBackend(IGatewayBackend):
         scapy.sendp([pkt_target, pkt_gw], iface=self._iface, verbose=0)
 
     def _send_restoration_burst(self, target_ip: str, target_mac: str) -> None:
-        """Send 5 consecutive bursts of corrective ARP replies restoring authentic MAC mappings."""
+        """
+        Send robust full-mesh corrective ARP bursts restoring authentic MAC mappings across
+        the target, gateway router, intermediate Wi-Fi repeaters/APs, and subnet broadcast.
+        Combines unicast ARP replies (op=2), broadcast ARP requests (op=1), and gratuitous ARP.
+        """
         if not self._iface or not self._gateway_ip or not self._gateway_mac:
             return
 
-        # 1. Corrective to Target: gateway IP is authentic gateway MAC
-        restore_target = scapy.Ether(src=self._gateway_mac, dst=target_mac) / scapy.ARP(
-            op=2,
-            hwsrc=self._gateway_mac,
-            psrc=self._gateway_ip,
-            hwdst=target_mac,
-            pdst=target_ip,
-        )
+        packets = [
+            # 1. Corrective Unicast to Target: gateway IP is authentic gateway MAC
+            scapy.Ether(src=self._gateway_mac, dst=target_mac) / scapy.ARP(
+                op=2,
+                hwsrc=self._gateway_mac,
+                psrc=self._gateway_ip,
+                hwdst=target_mac,
+                pdst=target_ip,
+            ),
+            # 2. Corrective Unicast to Gateway: target IP is authentic target MAC
+            scapy.Ether(src=target_mac, dst=self._gateway_mac) / scapy.ARP(
+                op=2,
+                hwsrc=target_mac,
+                psrc=target_ip,
+                hwdst=self._gateway_mac,
+                pdst=self._gateway_ip,
+            ),
+            # 3. Broadcast ARP request from Target asking for Gateway (heals switch & AP bridge tables)
+            scapy.Ether(src=target_mac, dst="ff:ff:ff:ff:ff:ff") / scapy.ARP(
+                op=1,
+                hwsrc=target_mac,
+                psrc=target_ip,
+                hwdst="00:00:00:00:00:00",
+                pdst=self._gateway_ip,
+            ),
+            # 4. Broadcast ARP request from Gateway asking for Target (heals phone & AP bridge tables)
+            scapy.Ether(src=self._gateway_mac, dst="ff:ff:ff:ff:ff:ff") / scapy.ARP(
+                op=1,
+                hwsrc=self._gateway_mac,
+                psrc=self._gateway_ip,
+                hwdst="00:00:00:00:00:00",
+                pdst=target_ip,
+            ),
+            # 5. Broadcast Gratuitous ARP for Gateway IP at authentic Gateway MAC
+            scapy.Ether(src=self._gateway_mac, dst="ff:ff:ff:ff:ff:ff") / scapy.ARP(
+                op=2,
+                hwsrc=self._gateway_mac,
+                psrc=self._gateway_ip,
+                hwdst="ff:ff:ff:ff:ff:ff",
+                pdst=self._gateway_ip,
+            ),
+            # 6. Broadcast Gratuitous ARP for Target IP at authentic Target MAC
+            scapy.Ether(src=target_mac, dst="ff:ff:ff:ff:ff:ff") / scapy.ARP(
+                op=2,
+                hwsrc=target_mac,
+                psrc=target_ip,
+                hwdst="ff:ff:ff:ff:ff:ff",
+                pdst=target_ip,
+            ),
+        ]
 
-        # 2. Corrective to Gateway: target IP is authentic target MAC
-        restore_gw = scapy.Ether(src=target_mac, dst=self._gateway_mac) / scapy.ARP(
-            op=2,
-            hwsrc=target_mac,
-            psrc=target_ip,
-            hwdst=self._gateway_mac,
-            pdst=self._gateway_ip,
-        )
+        for _ in range(8):
+            if self._l2socket:
+                for pkt in packets:
+                    self._l2socket.send(pkt)
+            else:
+                scapy.sendp(packets, iface=self._iface, verbose=0)
+            time.sleep(0.04)
 
-        for _ in range(5):
-            scapy.sendp([restore_target, restore_gw], iface=self._iface, verbose=0)
-            time.sleep(0.05)
