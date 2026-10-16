@@ -1,0 +1,13 @@
+Home Net Controller
+Copyright 2026 Ahmed Ibrahim (https://github.com/ahmedh4x)
+
+This product includes software developed by Ahmed Ibrahim for the
+Home Net Controller (HNC) Project (https://github.com/ahmedh4x/home-net-controller).
+
+Third-Party Dependencies & Acknowledgments:
+- PySide6 / Qt 6: Licensed under LGPLv3 / Commercial (The Qt Company). Dynamically loaded shared libraries. Source code for Qt is available at https://www.qt.io.
+- Scapy: Licensed under GNU General Public License v2 (GPLv2). Used as a network packet analysis and crafting library for Windows LAN off-path redirection in src/netcutter/backends/windows_lan.py. Scapy source code is available at https://github.com/secdev/scapy. In compliance with GPLv2 Section 3, the complete corresponding machine-readable source code for this project is provided in this repository.
+- Paramiko: Licensed under LGPLv2.1. Used for SSH client connectivity to router gateways. Paramiko source code is available at https://github.com/paramiko/paramiko.
+- Cryptography: Licensed under Apache 2.0 / BSD 3-Clause.
+- Requests: Licensed under Apache 2.0.
+- Pytest & Pytest-Qt: Licensed under MIT.

@@ -1,0 +1,80 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Testing & Linting
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Local databases, secrets, and caches
+*.db
+*.db-journal
+*.db-wal
+*.key
+.netcutter/
+.hnc/
+.test-tmp*
+run_live_exe_test.ps1
+
+# Build and Distribution Binaries (Excluded from git tracking)
+dist/
+build/
+
+# Internal Audit Reports (Excluded from public repo)
+docs/*_AUDIT.md
+docs/FINAL_RELEASE_GATE_REPORT.md
+docs/PROJECT_ROADMAP.md
+docs/IMPLEMENTATION_ROADMAP.md
+docs/DECISIONS.md
+docs/GUI_CONTROL_BACKEND_MAP.md
+docs/UI_DESIGN_REVIEW_CHECKLIST.md
+docs/UI_UX_DESIGN_GUIDE.md
+docs/ADRs/
+
+# IDE & OS
+.idea/
+.vscode/
+*.swp
+*.swo
+Thumbs.db
+Desktop.ini
+
+# Temporary scripts & internal docs
+scripts/emergency_restore_phone.*
+docs/ASSETS.md
+docs/PROJECT_ARCHITECTURE.md
+docs/screenshots/*_exe_*.png
+docs/screenshots/bandwidth.png
+docs/screenshots/diagnostics.png
+docs/screenshots/installation.png
+docs/screenshots/notifications.png
+docs/screenshots/policies.png
+
