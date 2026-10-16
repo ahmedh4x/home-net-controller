@@ -24,7 +24,7 @@ Home Net Controller is built on a **Controller Orchestration + Gateway-Native En
 |                                   PERSISTENCE LAYER                                     |
 |                                                                                         |
 |  SQLite Database (WAL Mode)               SecretStore (AES-GCM-256)                     |
-|  - Devices, Gateways, Audit, Settings     - Hardware-Bound Machine Salt Key             |
+|  - Devices, Gateways, Audit, Settings     - Windows DPAPI-Protected Master Key          |
 +--------------------------------------------+--------------------------------------------+
                                              | (Backend Invocation)
                                              v

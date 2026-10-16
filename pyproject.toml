@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "home-net-controller"
 version = "0.0.1"
-description = "Home Net Controller (HNC) — Authoritative network management, device visibility, and router policy control system."
+description = "Home Net Controller (HNC) — Windows-native network management, device visibility, and router policy control system."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "Apache-2.0" }
@@ -17,7 +17,8 @@ classifiers = [
     "Intended Audience :: System Administrators",
     "License :: OSI Approved :: Apache Software License",
     "Operating System :: Microsoft :: Windows",
-    "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows :: Windows 10",
+    "Operating System :: Microsoft :: Windows :: Windows 11",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",

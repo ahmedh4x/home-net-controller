@@ -21,9 +21,12 @@
 
 **Home Net Controller (HNC)** is an open-source network management, policy control, and device visibility application designed for home and lab environments. It provides administrators with visibility into connected LAN devices, real-time traffic statistics, policy-based internet access controls, and local domain blocking.
 
+> [!IMPORTANT]
+> **Windows-Only Platform Support:** Home Net Controller is officially developed, tested, and supported **exclusively on Microsoft Windows 10 and Windows 11 (64-bit)**. Linux and macOS are not supported.
+
 Built on an architectural **Dual-Mode Foundation**, HNC provides:
-1. **Gateway-Native Enforcement:** Orchestrates forwarding-path filters directly inside router operating systems (OpenWrt `nftables`, Linux router kernel, MikroTik RouterOS 7 REST API) with IPv6 parity and token-bucket QoS.
-2. **Windows LAN Off-Path Fallback:** Provides Layer-2 ARP packet redirection on local unmanaged networks when router SSH or management APIs are unavailable, guarded by strict self-exclusion invariants.
+1. **Gateway-Native Enforcement:** The Windows controller connects to remote routers (OpenWrt `nftables`, Linux router kernel, or MikroTik RouterOS 7 REST API) to manage forwarding-path filters with IPv6 parity and token-bucket QoS.
+2. **Windows LAN Off-Path Fallback:** Runs directly on the Windows network adapter via Layer-2 ARP packet redirection on local unmanaged networks when router SSH or management APIs are unavailable, guarded by strict self-exclusion invariants.
 
 ---
 
@@ -35,7 +38,7 @@ Built on an architectural **Dual-Mode Foundation**, HNC provides:
 - [Application Screenshots](#-application-screenshots)
 - [Architecture Overview](#-architecture-overview)
 - [Technology Stack](#-technology-stack)
-- [Installation & First Run](#-installation--first-run)
+- [Installation & First Run (Windows)](#-installation--first-run-windows)
 - [Command-Line Interface (CLI)](#-command-line-interface-cli)
 - [Permissions & System Requirements](#-permissions--system-requirements)
 - [Privacy & Sanitization Model](#-privacy--sanitization-model)
@@ -170,27 +173,45 @@ flowchart TD
 
 ---
 
-## 🚀 Installation & First Run
+## 🚀 Installation & First Run (Windows)
 
-### Running from Standalone Binaries (Recommended)
-1. Download or extract the release archive containing `dist/HomeNetController/`.
-2. Launch `HomeNetController.exe` directly as Administrator (required for raw packet inspection and ARP management).
-3. The desktop GUI starts with zero terminal window popup.
+### Windows Prerequisites
+- **Operating System:** Windows 10 (version 1809 or higher) or Windows 11 (64-bit).
+- **Administrative Privileges:** Administrator approval is required for raw network socket access, packet inspection, and local ARP redirection.
+- **Npcap Driver (Recommended):** Download and install [Npcap](https://npcap.com/#download) with the **"Install Npcap in WinPcap API-compatible Mode"** option checked. Npcap enables low-overhead packet injection on Windows network interfaces.
+- **Visual C++ Runtime:** Requires the [Microsoft Visual C++ 2015-2022 Redistributable (x64)](https://aka.ms/vs/17/release/vc_redist.x64.exe).
 
-### Running from Source
-```bash
-# Clone the repository
+### Method 1: Running from Standalone Portable Release (Recommended)
+1. Download **`HomeNetController-v0.0.1-windows-x64.zip`** and **`SHA256SUMS.txt`** from the [GitHub Releases](https://github.com/ahmedh4x/home-net-controller/releases/tag/v0.0.1).
+2. Open PowerShell and verify the archive checksum:
+   ```powershell
+   Get-FileHash .\HomeNetController-v0.0.1-windows-x64.zip -Algorithm SHA256
+   ```
+   Compare the resulting hash against the value published in `SHA256SUMS.txt`.
+3. Extract the ZIP archive:
+   ```powershell
+   Expand-Archive .\HomeNetController-v0.0.1-windows-x64.zip -DestinationPath .\HomeNetController\
+   ```
+4. Right-click **`HomeNetController.exe`** and select **Run as administrator**.
+
+> [!NOTE]
+> **Windows SmartScreen Notice:** As an independent open-source project without an enterprise EV signing certificate, Windows Defender SmartScreen may display an alert ("Windows protected your PC"). Click **More info** followed by **Run anyway** to proceed.
+
+### Method 2: Running from Source on Windows
+```powershell
+# 1. Clone the repository
 git clone https://github.com/ahmedh4x/home-net-controller.git
 cd home-net-controller
 
-# Create and activate virtual environment
+# 2. Create and activate a 64-bit virtual environment
 python -m venv .venv
-.venv\Scripts\activate
+.\.venv\Scripts\Activate.ps1
 
-# Install dependencies
+# 3. Upgrade build tools and install dependencies
+python -m pip install --upgrade pip setuptools wheel
 pip install -e ".[dev]"
 
-# Launch the desktop GUI
+# 4. Launch the PySide6 Desktop GUI as Administrator
 python main.py
 ```
 

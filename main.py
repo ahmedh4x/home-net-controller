@@ -11,7 +11,19 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 
+def check_platform():
+    """Warn if running on non-Windows operating systems."""
+    if sys.platform != "win32":
+        sys.stderr.write(
+            "Notice: Home Net Controller (HNC) is officially developed and supported exclusively "
+            "on Microsoft Windows (Windows 10 / 11 x64).\n"
+            f"Detected platform: {sys.platform}. Core Windows subsystems (DPAPI credential protection, "
+            "Npcap raw packet capture, and Windows LAN off-path interceptor) require Windows.\n"
+        )
+
+
 def run_gui():
+    check_platform()
     try:
         from netcutter.ui_qt import run_gui as _run_gui
     except ImportError as exc:
@@ -25,6 +37,7 @@ def run_gui():
 
 
 def run_legacy_tk():
+    check_platform()
     import tkinter as tk
     from netcutter.ui.app import NetCutterApp
 
@@ -34,11 +47,13 @@ def run_legacy_tk():
 
 
 def run_cli():
+    check_platform()
     from netcutter.cli.main import main
     main()
 
 
 if __name__ == "__main__":
+    check_platform()
     if sys.platform == "win32":
         try:
             import ctypes

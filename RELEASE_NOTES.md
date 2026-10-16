@@ -3,16 +3,16 @@
 **Author & Maintainer:** Ahmed Ibrahim  
 **GitHub:** [https://github.com/ahmedh4x](https://github.com/ahmedh4x)  
 **LinkedIn:** [https://www.linkedin.com/in/ahmed-ibrahim-h4x/](https://www.linkedin.com/in/ahmed-ibrahim-h4x/)  
-**Initial Public Release:** `v0.0.1`  
-**Target Platform:** Windows 10/11 x64 (Desktop GUI & CLI)  
+**Initial Public Release:** `v0.0.1` (Public Beta)  
+**Target Platform:** Windows 10 / Windows 11 x64 exclusively (Desktop GUI & CLI)  
 **License:** Apache License 2.0  
-**Verification Baseline:** **106/106 Automated Tests Passed (100% Green)**  
+**Verification Baseline:** **111/111 Automated Tests Passed on Windows (100% Green)**  
 
 ---
 
 ## 🌟 Welcome to Home Net Controller (HNC)
 
-Home Net Controller (HNC) is an authoritative desktop network management, policy control, and device intelligence system designed for home and small-office environments. It provides full visibility into connected network clients, real-time traffic accounting, granular access management, and domain blocking.
+Home Net Controller (HNC) is an open-source Windows desktop network management, policy control, and device intelligence application designed for home and lab environments. It provides visibility into connected network clients, real-time traffic statistics, granular access controls, and domain blocking.
 
 ### Core Features
 
@@ -24,8 +24,8 @@ Home Net Controller (HNC) is an authoritative desktop network management, policy
    - Bespoke vector SVG icons for all device categories and navigation views.
    - High-density, unclipped data tables with responsive column widths and status badges.
 3. **Gateway-Native & Off-Path LAN Dual Modes:**
-   - *Gateway-Native Mode (OpenWrt, Linux nftables, MikroTik RouterOS):* Hardware-level enforcement with bidirectional HTB rate shaping and mandatory IPv6 parity.
-   - *Windows LAN Mode (Off-Path):* Layer-2 ARP packet orchestration fallback for ISP-locked home routers with safety watchdogs and self-exclusion protections.
+   - *Gateway-Native Mode (OpenWrt, Linux nftables, MikroTik RouterOS):* Forwarding-path rule management on remote routers with bidirectional HTB rate shaping and IPv6 parity.
+   - *Windows LAN Mode (Off-Path):* Layer-2 ARP packet orchestration fallback for local subnets with safety watchdogs and self-exclusion protections.
 4. **Website & Domain Blocking:**
    - Offline domain validation supporting exact hostnames and wildcard subdomains.
    - Intercepts UDP/TCP port 53 DNS queries with instant sinkhole response.
@@ -33,9 +33,9 @@ Home Net Controller (HNC) is an authoritative desktop network management, policy
    - Live upload and download bandwidth calculation with per-device attribution and exponential smoothing.
 6. **Multi-Tier Device Intelligence:**
    - 4-level evidence hierarchy categorizing discovered nodes across 10 hardware types with vendor OUI lookup and randomized MAC detection.
-7. **Zero-Trust Security & Crash Protection:**
-   - Machine-bound AES-GCM-256 encrypted credential vault with strict OS access controls.
-   - Global exception handling and sanitized diagnostic bundles redacting passwords and secret tokens.
+7. **Windows DPAPI Security & Crash Protection:**
+   - Root credential vault protected via Windows Data Protection API (DPAPI) and AES-GCM-256 authenticated encryption.
+   - Global exception handling and sanitized diagnostic bundles redacting passwords, private keys, and secret tokens.
 
 ---
 
@@ -51,7 +51,7 @@ Home Net Controller (HNC) is an authoritative desktop network management, policy
 
 ## 🛠️ Automated Verification Suite
 
-- **Total Tests:** 106 passed in 8.12 seconds
+- **Total Tests:** 111 passed on Windows
 - **Categories Tested:**
   - GUI & Desktop Shell (`test_qt_app.py` - 10 tests)
   - Device Classification Engine (`test_device_classification.py` - 5 tests)
@@ -61,10 +61,11 @@ Home Net Controller (HNC) is an authoritative desktop network management, policy
   - State Reconciliation Engine (`test_reconciliation.py` - 1 test)
   - QoS Traffic Shaping (`test_qos_shaping.py` - 1 test)
   - AI Assistant & Deterministic Engine (`test_ai_assistant.py` - 4 tests)
+  - AI Privacy & Redaction Engine (`test_ai_privacy.py` - 2 tests)
   - Headless CLI Automation (`test_cli.py` - 7 tests)
   - Domain & Website Blocking (`test_domain_blocking.py` - 10 tests)
   - Enforcement Supervisor & Safety Watchdog (`test_enforcement_supervisor.py` - 5 tests)
-  - Hardened Router Enforcement (`test_hardened_enforcement.py` - 7 tests)
+  - Hardened Router Enforcement & TLS Pinning (`test_hardened_enforcement.py` - 8 tests)
   - Identity Resolution & MAC Normalization (`test_identity.py` - 5 tests)
   - Installation Service & Dependency Doctor (`test_installation_service.py` - 5 tests)
   - Logging & Sanitized Support Bundles (`test_logging_and_support_bundle.py` - 4 tests)
@@ -72,7 +73,7 @@ Home Net Controller (HNC) is an authoritative desktop network management, policy
   - Health Monitoring & Safe Mode (`test_notification_and_health.py` - 2 tests)
   - Policy Differencing Engine (`test_policy_diff.py` - 5 tests)
   - Policy Preview & Pre-Flight Gating (`test_policy_preview.py` - 3 tests)
-  - Machine-Bound Secret Vault (`test_secret_store.py` - 1 test)
+  - Windows DPAPI Secret Vault & Migration (`test_secret_store.py` - 3 tests)
   - Network State Finite Machine (`test_state_engine.py` - 5 tests)
   - Traffic Accounting & LANtern Integration (`test_traffic_accounting.py` - 5 tests)
   - Windows LAN Interceptor Safety (`test_windows_lan.py` - 9 tests)

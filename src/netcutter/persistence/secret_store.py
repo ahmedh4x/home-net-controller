@@ -173,8 +173,19 @@ def _load_or_generate_persistent_key() -> Tuple[bytes, bool]:
                         try:
                             with open(plaintext_path, "wb") as f_shred:
                                 f_shred.write(os.urandom(32))
-                            os.remove(plaintext_path)
-                            logger.info("Migrated plaintext master.key to DPAPI master.key.dpapi successfully.")
+                            import time
+                            removed = False
+                            for attempt in range(5):
+                                try:
+                                    os.remove(plaintext_path)
+                                    removed = True
+                                    break
+                                except (PermissionError, OSError):
+                                    time.sleep(0.05)
+                            if removed:
+                                logger.info("Migrated plaintext master.key to DPAPI master.key.dpapi successfully.")
+                            else:
+                                logger.warning("Could not delete legacy plaintext master.key after 5 attempts.")
                         except Exception as shred_ex:
                             logger.warning("Could not delete legacy plaintext master.key: %s", shred_ex)
                         return raw_key, True

@@ -38,7 +38,7 @@ Main CLI binary: `dist\HomeNetController\hnc-cli.exe`
 Home Net Controller does **not** write state or configuration into the installation directory, ensuring compatibility with protected locations (`C:\Program Files\`):
 
 - Database path: `%LOCALAPPDATA%\HomeNetController\hnc.db` (with legacy fallback to `%LOCALAPPDATA%\NetCutter\netcutter.db`)
-- Encryption master key: `%LOCALAPPDATA%\HomeNetController\master.key` (with user-only ACL)
+- Encryption master key: `%LOCALAPPDATA%\HomeNetController\master.key.dpapi` (protected by Windows DPAPI with user-only ACL)
 - Audit log ring buffer: In-memory with optional support bundle export to user-selected folder.
 
 ---
