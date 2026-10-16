@@ -590,7 +590,7 @@ class DomainRulesTableModel(QAbstractTableModel):
                     return QColor(Theme.DANGER_TEXT)
                 return QColor(Theme.TEXT_MUTED)
             elif col == 4:
-                return QColor(Theme.ACCENT if rule.hits_count > 0 else Theme.TEXT_MUTED)
+                return QColor(Theme.CYAN_ACCENT if rule.hits_count > 0 else Theme.TEXT_MUTED)
             elif col == 5:
                 return QColor(Theme.SUCCESS_TEXT if rule.is_enabled else Theme.TEXT_MUTED)
 

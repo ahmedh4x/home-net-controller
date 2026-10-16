@@ -33,6 +33,7 @@ class Theme:
     # Semantic Status Accents
     CYAN_ACCENT = "#00f0ff"     # Primary Electric Brand Cyan
     CYAN = CYAN_ACCENT          # Alias
+    ACCENT = CYAN_ACCENT        # Alias
     CYAN_HOVER = "#38f9d7"      # High-Luminance Cyan Hover
     VIOLET_ACCENT = "#a855f7"   # Neon Violet Accent for AI & Special Actions
     VIOLET = VIOLET_ACCENT      # Alias
@@ -105,10 +106,10 @@ class Theme:
 
         /* Typography */
         QLabel#BrandTitle {{
-            font-size: 16px;
+            font-size: 13px;
             font-weight: 700;
             color: #ffffff;
-            letter-spacing: 0.8px;
+            letter-spacing: 0.4px;
         }}
 
         QLabel#BrandSubtitle {{

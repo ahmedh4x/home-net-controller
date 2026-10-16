@@ -30,7 +30,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgl1-mesa-glx libegl1-mesa libxkbcommon-x11-0 xvfb
+          sudo apt-get install -y libgl1 libegl1 libxkbcommon-x11-0 libxcb-cursor0 xvfb
 
       - name: Upgrade pip and install build dependencies
         run: |
@@ -47,6 +47,8 @@ jobs:
 
       - name: Run Pytest test suite (Windows & macOS)
         if: runner.os != 'Linux'
+        env:
+          QT_QPA_PLATFORM: offscreen
         run: |
           python -m pytest -v
 
@@ -54,3 +56,5 @@ jobs:
         run: |
           python main.py --help
           python main.py diagnostics
+          hnc --help
+          hnc diagnostics

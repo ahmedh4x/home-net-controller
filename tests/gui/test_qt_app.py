@@ -271,6 +271,15 @@ def test_domain_blocking_view_and_dialog(qtbot, app_window):
     assert domain_view.rules_model.data(domain_view.rules_model.index(1, 1), Qt.DisplayRole) == "badsite.org (exact)"
     assert domain_view.rules_model.data(domain_view.rules_model.index(1, 5), Qt.DisplayRole) == "Disabled"
 
+    # Verify foreground styling (including hits count accent color)
+    from PySide6.QtGui import QColor
+    color_hit = domain_view.rules_model.data(domain_view.rules_model.index(0, 4), Qt.ForegroundRole)
+    assert isinstance(color_hit, QColor)
+    assert color_hit.name().lower() == Theme.CYAN_ACCENT.lower()
+    color_status = domain_view.rules_model.data(domain_view.rules_model.index(0, 3), Qt.ForegroundRole)
+    assert isinstance(color_status, QColor)
+    assert color_status.name().lower() == Theme.SUCCESS_TEXT.lower()
+
     # Check events model
     evt = BlockedDomainEvent(
         domain="ads.example.com",
