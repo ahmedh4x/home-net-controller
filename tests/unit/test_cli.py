@@ -91,3 +91,31 @@ def test_cli_block_nonexistent_device():
     with pytest.raises(SystemExit) as exc:
         main(["block", "dead-beef-missing-target"])
     assert exc.value.code == 1
+
+
+def test_cli_gateways_plain_text():
+    out_buf = io.StringIO()
+    with redirect_stdout(out_buf):
+        main(["gateways"])
+    raw = out_buf.getvalue()
+    assert "Configured Gateways" in raw
+    assert "* ACTIVE" in raw or "INACTIVE" in raw
+
+
+def test_cli_rename_device():
+    # First get a device to rename
+    out_buf = io.StringIO()
+    with redirect_stdout(out_buf):
+        main(["devices", "--json"])
+    devices = json.loads(out_buf.getvalue())
+    assert len(devices) > 0
+    target_mac = devices[0]["mac"]
+
+    # Rename it
+    rename_buf = io.StringIO()
+    with redirect_stdout(rename_buf):
+        main(["rename", target_mac, "Test-Renamed-Device", "--json"])
+    result = json.loads(rename_buf.getvalue())
+    assert result["success"] is True
+    assert result["display_name"] == "Test-Renamed-Device"
+

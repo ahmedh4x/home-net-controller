@@ -66,6 +66,12 @@ def build_parser() -> argparse.ArgumentParser:
     p_unlimit.add_argument("target", help="Device MAC, GUID, or name")
     p_unlimit.add_argument("--json", action="store_true", help="Output result as JSON")
 
+    # rename
+    p_rename = subparsers.add_parser("rename", help="Set a friendly name for a device")
+    p_rename.add_argument("target", help="Device MAC, GUID, IP, or current name")
+    p_rename.add_argument("name", help="New friendly name for the device")
+    p_rename.add_argument("--json", action="store_true", help="Output result as JSON")
+
     # reconcile
     p_rec = subparsers.add_parser("reconcile", help="Run reconciliation pass between desired and observed state")
     p_rec.add_argument("--json", action="store_true", help="Output reconciliation results as JSON")
@@ -170,14 +176,18 @@ def main(args=None):
         gw_manager.set_active_gateway(active_gw.gateway_id)
 
     def find_device(target: str) -> Device | None:
-        # Check by GUID first, then MAC, then display name
+        # Check by GUID first, then MAC, then display name, then IP
         dev = device_repo.get_by_guid(target)
         if not dev:
             dev = device_repo.get_by_mac(target)
         if not dev:
             all_devs = device_repo.get_all()
             for d in all_devs:
-                if d.display_name.lower() == target.lower() or (d.hostname and d.hostname.lower() == target.lower()):
+                if (
+                    d.display_name.lower() == target.lower()
+                    or (d.hostname and d.hostname.lower() == target.lower())
+                    or (target in d.ipv4_addresses)
+                ):
                     return d
         return dev
 
@@ -295,6 +305,28 @@ def main(args=None):
                 print(f"[-] FAILED: {res.error}")
                 sys.exit(1)
 
+    elif parsed.command == "rename":
+        dev = find_device(parsed.target)
+        if not dev:
+            if is_json:
+                print(json.dumps({"success": False, "error": f"Device '{parsed.target}' not found"}))
+            else:
+                print(f"[ERROR] Device '{parsed.target}' not found.")
+            sys.exit(1)
+        updated = device_service.update_display_name(dev.device_guid, parsed.name)
+        if is_json:
+            print(json.dumps({
+                "success": bool(updated),
+                "device_guid": dev.device_guid,
+                "display_name": updated.display_name if updated else None,
+            }))
+        else:
+            if updated:
+                print(f"[+] SUCCESS: Renamed device {dev.primary_mac} ({dev.primary_ipv4}) to '{updated.display_name}'.")
+            else:
+                print(f"[-] FAILED: Could not update device name.")
+                sys.exit(1)
+
     elif parsed.command == "reconcile":
         if not is_json:
             print("[*] Executing state reconciliation cycle...")
@@ -329,7 +361,7 @@ def main(args=None):
                 print(f"  {mark:<7} {c.name}: {c.details}")
             print("\nSupported Capabilities:")
             for cap, val in report.capabilities_matrix.items():
-                print(f"  • {cap:<35}: {val}")
+                print(f"  - {cap:<35}: {val}")
 
     elif parsed.command == "gateways":
         gws = gw_repo.get_all()
@@ -350,7 +382,7 @@ def main(args=None):
         else:
             print(f"\nConfigured Gateways ({len(gws)} total):")
             for g in gws:
-                active = "★ ACTIVE" if g.is_active else "  INACTIVE"
+                active = "* ACTIVE" if g.is_active else "  INACTIVE"
                 print(f"{active} | {g.name:<25} | {g.host}:{g.port} [{g.backend_type.value}] | Status: {g.status.value}")
 
     elif parsed.command == "events":
@@ -383,7 +415,7 @@ def main(args=None):
             if resp.action_proposals:
                 print("\nProposed Actions (Verification Required):")
                 for p in resp.action_proposals:
-                    print(f"  • [{p.risk_level.value}] {p.action_type}: {p.explanation}")
+                    print(f"  - [{p.risk_level.value}] {p.action_type}: {p.explanation}")
 
     elif parsed.command == "domains":
         domain_service = DomainBlockingService(db, gateway_manager=gw_manager, device_service=device_service)
@@ -474,7 +506,7 @@ def main(args=None):
                 for rid, (s, d) in results.items():
                     rule = domain_service.get_rule(rid)
                     dom = rule.domain if rule else rid
-                    status = "✓ VERIFIED" if s else "✗ FAILED"
+                    status = "[PASS] VERIFIED" if s else "[FAIL] FAILED"
                     print(f"  {status} {dom:<25}: {d}")
 
         elif action == "events":

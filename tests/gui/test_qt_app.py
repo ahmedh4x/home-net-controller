@@ -309,3 +309,65 @@ def test_domain_blocking_view_and_dialog(qtbot, app_window):
     assert data["match_type"] == DomainMatchType.SUBDOMAIN
     assert data["target_scope"] == DomainScope.GLOBAL
 
+
+def test_bandwidth_dialog_presets_and_save(qtbot):
+    from netcutter.ui_qt.dialogs import BandwidthDialog
+    device = Device(
+        display_name="Test-Device",
+        primary_mac="00:11:22:33:44:55",
+        ipv4_addresses=["192.168.1.100"],
+    )
+    saved_limits = []
+    def mock_save(dl, ul):
+        saved_limits.append((dl, ul))
+
+    dialog = BandwidthDialog(device=device, on_save=mock_save)
+    qtbot.addWidget(dialog)
+
+    # Test preset 5 Mbps
+    dialog._apply_preset(5120, 2048)
+    assert dialog.spin_dl.value() == 5120
+    assert dialog.spin_ul.value() == 2048
+
+    # Apply
+    dialog._on_apply()
+    assert len(saved_limits) == 1
+    assert saved_limits[0] == (5120, 2048)
+
+
+def test_gateway_config_dialog(qtbot):
+    from netcutter.domain.models import GatewayConfig, BackendType
+    from netcutter.ui_qt.dialogs import GatewayConfigDialog
+    cfg = GatewayConfig(
+        gateway_id="gw-test",
+        name="Test Gateway",
+        host="192.168.1.1",
+        port=22,
+        backend_type=BackendType.OPENWRT,
+        username="root",
+    )
+    saved_configs = []
+    def mock_save(new_cfg, pwd):
+        saved_configs.append((new_cfg, pwd))
+
+    dialog = GatewayConfigDialog(config=cfg, on_save=mock_save)
+    qtbot.addWidget(dialog)
+
+    assert dialog.txt_name.text() == "Test Gateway"
+    assert dialog.txt_host.text() == "192.168.1.1"
+    assert dialog.spin_port.value() == 22
+    assert dialog.txt_user.text() == "root"
+
+    # Modify
+    dialog.txt_name.setText("Updated Router")
+    dialog.spin_port.setValue(2222)
+    dialog.txt_password.setText("NewSecret123")
+    dialog._on_save_clicked()
+
+    assert len(saved_configs) == 1
+    updated_cfg, pwd = saved_configs[0]
+    assert updated_cfg.name == "Updated Router"
+    assert updated_cfg.port == 2222
+    assert pwd == "NewSecret123"
+
+
