@@ -18,17 +18,15 @@ Home Net Controller is committed to providing a secure and safe network manageme
 If you discover a security vulnerability in Home Net Controller:
 
 1. **Do NOT open a public issue.**
-2. Send a detailed report to the security maintainers via GitHub Private Vulnerability Reporting or email the project owner directly.
+2. Report the vulnerability privately via **[GitHub Private Vulnerability Reporting](https://github.com/ahmedh4x/home-net-controller/security/advisories/new)**.
 3. Include the following details:
    - Type of vulnerability (e.g., credential storage exposure, off-path packet injection flaw, unhandled crash recovery gap).
    - Step-by-step instructions or proof-of-concept script to reproduce the issue.
    - Operating system and Python version.
    - Any potential mitigations or patches you have identified.
 
-### Response Timeline
-- **Initial Response:** Within 48 hours of report receipt.
-- **Triage & Assessment:** Within 5 business days.
-- **Remediation & Patch Release:** A CVE and patched release candidate will be published according to coordinated disclosure best practices.
+### Response & Handling
+Reports submitted through GitHub Private Vulnerability Reporting are reviewed by the maintainer on a best-effort basis. Valid security reports will be triaged and addressed via GitHub Security Advisories and release updates.
 
 ---
 

@@ -4,7 +4,7 @@
 
 ### *Your Home Network. Under Your Control.*
 
-[![Tests](https://img.shields.io/badge/tests-106%20passed-brightgreen.svg)]()
+[![Tests](https://img.shields.io/badge/tests-111%20passed-brightgreen.svg)]()
 [![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11%20x64-blue.svg)]()
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-v0.0.1-orange.svg)](RELEASE_NOTES.md)
@@ -19,10 +19,10 @@
 
 </div>
 
-**Home Net Controller (HNC)** is a production-grade, authoritative network management, policy control, and device visibility system designed for home and small-office environments. It empowers network administrators to discover connected devices, monitor real-time traffic consumption, restrict unauthorized internet access, and enforce domain blocking rules.
+**Home Net Controller (HNC)** is an open-source network management, policy control, and device visibility application designed for home and lab environments. It provides administrators with visibility into connected LAN devices, real-time traffic statistics, policy-based internet access controls, and local domain blocking.
 
 Built on an architectural **Dual-Mode Foundation**, HNC provides:
-1. **Gateway-Native Enforcement:** Orchestrates forwarding-path filters directly inside router operating systems (OpenWrt `nftables`, Linux router kernel, MikroTik RouterOS 7 REST API) with mandatory IPv6 parity and token-bucket QoS.
+1. **Gateway-Native Enforcement:** Orchestrates forwarding-path filters directly inside router operating systems (OpenWrt `nftables`, Linux router kernel, MikroTik RouterOS 7 REST API) with IPv6 parity and token-bucket QoS.
 2. **Windows LAN Off-Path Fallback:** Provides Layer-2 ARP packet redirection on local unmanaged networks when router SSH or management APIs are unavailable, guarded by strict self-exclusion invariants.
 
 ---
@@ -31,6 +31,7 @@ Built on an architectural **Dual-Mode Foundation**, HNC provides:
 
 - [Key Features](#-key-features)
 - [Feature Support Matrix](#-feature-support-matrix)
+- [Technical Limitations & Operational Caveats](#-technical-limitations--operational-caveats)
 - [Application Screenshots](#-application-screenshots)
 - [Architecture Overview](#-architecture-overview)
 - [Technology Stack](#-technology-stack)
@@ -70,6 +71,25 @@ Built on an architectural **Dual-Mode Foundation**, HNC provides:
 | **Website / Domain Blocking** | ✅ dnsmasq / IPSet | ✅ DNS Static | ✅ DNS Intercept | **Automated Domain Tests (10/10 passing)** |
 | **Real-Time Traffic Metering** | ✅ Conntrack Bytes | ✅ Queue Counters | ✅ Packet Accounting| **Synthetic Accounting Engine Tests** |
 | **Reconciliation & Anti-Drift** | ✅ Kernel Loop | ✅ API Sync Loop | ✅ Watchdog Timer | **Automated State Drift Tests** |
+
+---
+
+## ⚠️ Technical Limitations & Operational Caveats
+
+When deploying and using Home Net Controller, administrators should be aware of the following architectural boundaries and protocol limitations:
+
+1. **DNS-over-HTTPS (DoH) & Encrypted DNS (DoT / DoQ):**  
+   Domain blocking rules in Windows LAN mode and router-assisted DNS intercept rely on traditional unencrypted DNS (UDP/TCP port 53) and router DNS daemon configuration (`dnsmasq` / RouterOS DNS). Clients configured with encrypted DNS protocols (DoH, DoT, or DNSCrypt) bypass Layer-2 DNS sinkholing unless encrypted DNS endpoints are explicitly blocked via firewall IP/port rules on the router.
+2. **Virtual Private Networks (VPNs) & Encrypted Tunnels:**  
+   Clients operating full-tunnel VPNs (WireGuard, OpenVPN, IPsec) or encrypted proxies encapsulate all application traffic. Router-level firewall rules can block outbound VPN handshakes by IP/port, but off-path domain inspection cannot inspect SNI or DNS within encrypted tunnels.
+3. **MAC Address Randomization:**  
+   Modern operating systems (iOS, Android, Windows 11) enable randomized (locally administered) MAC addresses by default on Wi-Fi networks. HNC flags private MACs in the inventory and provides warnings; however, if a client rotates its MAC address upon reconnection, MAC-targeted policies will not apply until the new identity is cataloged.
+4. **Client Isolation & Private VLANs:**  
+   On networks where Wi-Fi Access Points enforce Wireless Client Isolation or managed switches enforce private VLANs / port isolation, off-path Layer-2 ARP packets from the controller cannot reach peer endpoints. In these environments, Gateway-Native mode (OpenWrt or MikroTik installed on the physical router) is strictly required.
+5. **Off-Path QoS Limitation:**  
+   The Windows LAN interceptor operates off-path via Layer-2 ARP manipulation. It is technically impossible to perform reliable token-bucket QoS bandwidth rate-limiting off-path without router hardware cooperation. Bandwidth shaping is exclusively available in Gateway-Native mode.
+6. **Simulated vs. Physical Router Environments:**  
+   Automated test suites run against deterministic Linux network driver mocks and synthetic test harnesses. While validated on physical router hardware, variations in third-party firmware, custom firewall chains, and hardware-accelerated FastPath/Flow Offloading may require customized firewall hooks.
 
 ---
 
@@ -205,17 +225,18 @@ hnc diagnostics --json
 
 ## 🛡️ Privacy & Sanitization Model
 
-Home Net Controller operates under a strict **Zero-Cloud-Egress** philosophy:
-- **Local Storage Only:** Device inventory, traffic history, and policy rules are stored strictly on the local workstation in `%LOCALAPPDATA%\NetCutter\` (or `%LOCALAPPDATA%\HomeNetController\`).
-- **No Cloud Telemetry:** HNC transmits zero telemetry, tracking events, or usage metrics to external servers.
-- **Sanitized Diagnostics:** The built-in diagnostic support bundle generator strips passwords, API tokens, and private keys before exporting diagnostic archives.
+Home Net Controller is built with privacy-first principles:
+- **Local Storage by Default:** Device inventory, traffic history, and policy rules are stored strictly on the local workstation in `%LOCALAPPDATA%\HomeNetController\` (with backwards compatibility for `%LOCALAPPDATA%\NetCutter\`).
+- **No Analytics or Cloud Telemetry:** HNC does not collect, track, or transmit usage analytics or telemetry to any external servers.
+- **Opt-In AI Assistant with Data Minimization:** AI diagnostic features default to an offline, deterministic local rule engine requiring 0 network egress. External LLM connectivity can be explicitly enabled via `HNC_ENABLE_AI_EGRESS=1`. When enabled, the context payload is automatically pseudonymized and sanitized—private IP addresses, MAC addresses, and credentials are fully redacted before transmission.
+- **Sanitized Support Bundles:** The diagnostic support bundle generator strips passwords, API tokens, and private keys before exporting diagnostic archives.
 - **Demonstration Data:** All screenshots and documentation examples use synthetic RFC 5737 test addresses (`192.0.2.0/24`) and randomized MAC prefixes (`02:00:00:...`).
 
 ---
 
 ## 🧪 Testing & Quality Verification
 
-NetCutter / Home Net Controller maintains a **100% test pass rate** with 106 automated tests:
+Home Net Controller maintains a verified test suite with 111 automated tests covering unit logic, driver abstractions, GUI models, and security invariants:
 
 ```cmd
 # Run complete test suite
@@ -223,7 +244,7 @@ python -m pytest -v
 ```
 
 ```text
-====================== 106 passed, 1 warning in 8.12s =======================
+====================== 111 passed, 1 warning in 7.04s =======================
 ```
 
 ---
