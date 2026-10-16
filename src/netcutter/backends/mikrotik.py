@@ -64,18 +64,28 @@ class MikroTikBackend(IGatewayBackend):
             self._session = requests.Session()
             self._session.auth = HTTPBasicAuth(self.config.username, self._password or "")
 
-            # Configure TLS validation
+            # Configure TLS validation and cryptographic certificate pinning
             if self.config.tls_ca_path:
                 self._session.verify = self.config.tls_ca_path
-            elif self.config.tls_verify:
-                self._session.verify = True
-            else:
+            elif self.config.tls_fingerprint:
+                # Cryptographic certificate fingerprint pinning for self-signed router certs
+                self._verify_tls_fingerprint()
                 self._session.verify = False
                 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-            # If TLS certificate fingerprint pinning is configured, verify certificate
-            if self.config.tls_fingerprint:
-                self._verify_tls_fingerprint()
+            elif self.config.tls_verify:
+                # Default secure mode: strict system CA verification
+                self._session.verify = True
+            else:
+                # Insecure TLS explicitly opted into by setting tls_verify=False
+                logger.warning(
+                    "SECURITY WARNING: Strict TLS certificate verification is disabled for MikroTik gateway %s:%s. "
+                    "Connection is vulnerable to active Man-in-the-Middle (MITM) attacks. "
+                    "Configure tls_ca_path or pin tls_fingerprint to secure this connection.",
+                    self.config.host,
+                    self.config.port,
+                )
+                self._session.verify = False
+                urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
             # Test connectivity via system resource
             res = self._session.get(f"{self._base_url}/system/resource", timeout=8)

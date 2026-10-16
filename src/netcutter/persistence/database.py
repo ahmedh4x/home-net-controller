@@ -102,7 +102,7 @@ class Database:
                 last_error TEXT,
                 ssh_host_key_fingerprint TEXT,
                 ssh_key_data TEXT,
-                tls_verify INTEGER NOT NULL DEFAULT 0,
+                tls_verify INTEGER NOT NULL DEFAULT 1,
                 tls_ca_path TEXT,
                 tls_fingerprint TEXT
             );
@@ -112,7 +112,7 @@ class Database:
             for col, col_type in [
                 ("ssh_host_key_fingerprint", "TEXT"),
                 ("ssh_key_data", "TEXT"),
-                ("tls_verify", "INTEGER NOT NULL DEFAULT 0"),
+                ("tls_verify", "INTEGER NOT NULL DEFAULT 1"),
                 ("tls_ca_path", "TEXT"),
                 ("tls_fingerprint", "TEXT"),
             ]:

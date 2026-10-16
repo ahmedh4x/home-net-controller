@@ -241,7 +241,7 @@ class GatewayConfig:
     # Security & Verification configuration
     ssh_host_key_fingerprint: Optional[str] = None  # e.g. "SHA256:..." pinned host key
     ssh_key_data: Optional[str] = None  # Encrypted/provided private key text/path if key auth is used
-    tls_verify: bool = False  # False = trust / pin fingerprint; True = strict CA validation
+    tls_verify: bool = True  # Strict CA validation by default; False requires explicit opt-out
     tls_ca_path: Optional[str] = None  # Custom CA bundle path
     tls_fingerprint: Optional[str] = None  # SHA256 cert fingerprint for pinning self-signed certs
 

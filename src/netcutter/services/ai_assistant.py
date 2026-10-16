@@ -395,12 +395,58 @@ class AIAssistantService:
         self._init_optional_llm()
 
     def _init_optional_llm(self):
-        endpoint = os.environ.get("NETCUTTER_LLM_ENDPOINT")
+        endpoint = os.environ.get("HNC_LLM_ENDPOINT", os.environ.get("NETCUTTER_LLM_ENDPOINT"))
+        opt_in = os.environ.get("HNC_ENABLE_AI_EGRESS", os.environ.get("NETCUTTER_ENABLE_AI_EGRESS", "false")).lower() in ("true", "1", "yes")
         if endpoint:
-            api_key = os.environ.get("NETCUTTER_LLM_API_KEY", "")
-            model = os.environ.get("NETCUTTER_LLM_MODEL", "llama3")
+            if not opt_in:
+                logger.info(
+                    "LLM endpoint configured at %s, but AI network egress is disabled by default for privacy. "
+                    "Set HNC_ENABLE_AI_EGRESS=1 or enable in settings to permit external inference.",
+                    endpoint,
+                )
+                self.llm_client = None
+                return
+            api_key = os.environ.get("HNC_LLM_API_KEY", os.environ.get("NETCUTTER_LLM_API_KEY", ""))
+            model = os.environ.get("HNC_LLM_MODEL", os.environ.get("NETCUTTER_LLM_MODEL", "llama3"))
             self.llm_client = OpenAICompatibleClient(endpoint, api_key, model)
-            logger.info("Configured external LLM provider at %s (model: %s)", endpoint, model)
+            logger.info("Configured sanitized external LLM provider at %s (model: %s)", endpoint, model)
+
+    @staticmethod
+    def sanitize_context_for_egress(
+        devices: List[Device],
+        active_gw: Optional[GatewayConfig],
+        recent_errors: List[str],
+    ) -> Dict[str, Any]:
+        """
+        Produce a minimal, pseudonymized context dictionary suitable for external LLM inference.
+        Strips private IPs, MAC addresses, and sensitive network identifiers.
+        """
+        sanitized_devs = []
+        for i, d in enumerate(devices, 1):
+            vendor = d.vendor or ("Locally Administered / Private" if is_locally_administered_mac(d.primary_mac) else "Unknown Vendor")
+            cat_name = getattr(d.category, "value", str(getattr(d, "category", "OTHER")))
+            sanitized_devs.append({
+                "pseudonym": f"Device-{i:02d}",
+                "vendor": vendor,
+                "category": cat_name,
+                "online": d.is_online,
+                "is_blocked": d.desired_policy.is_blocked,
+                "has_bandwidth_limits": (d.desired_policy.download_limit_kbps > 0 or d.desired_policy.upload_limit_kbps > 0),
+            })
+
+        # Redact recent errors of potential passwords, tokens, or private addresses
+        redacted_errors = []
+        for err in recent_errors:
+            clean_err = re.sub(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", "<IP_REDACTED>", err)
+            clean_err = re.sub(r"\b(?:[0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}\b", "<MAC_REDACTED>", clean_err)
+            redacted_errors.append(clean_err)
+
+        return {
+            "gateway_type": active_gw.backend_type.value if active_gw else "NONE",
+            "total_monitored_devices": len(devices),
+            "sanitized_devices": sanitized_devs,
+            "diagnostic_events": redacted_errors,
+        }
 
     def _get_recent_errors(self, max_count: int = 10) -> List[str]:
         ring = get_ring_buffer()
@@ -417,29 +463,15 @@ class AIAssistantService:
         active_gw = self.gw_repo.get_active()
         recent_errors = self._get_recent_errors()
 
-        # If LLM endpoint is available and responsive, we can consult it
+        # If LLM endpoint is available, explicitly opted in, and responsive, consult it with sanitized payload
         if self.llm_client and query_text.strip():
             try:
-                context = {
-                    "active_gateway": active_gw.name if active_gw else None,
-                    "backend_type": active_gw.backend_type.value if active_gw else None,
-                    "devices": [
-                        {
-                            "name": d.display_name,
-                            "mac": d.primary_mac,
-                            "ipv4": d.primary_ipv4,
-                            "online": d.is_online,
-                            "blocked": d.desired_policy.is_blocked,
-                        }
-                        for d in devices
-                    ],
-                    "recent_errors": recent_errors,
-                }
+                context = self.sanitize_context_for_egress(devices, active_gw, recent_errors)
                 summary, md = self.llm_client.complete(query_text, context)
                 return AIResponse(
                     summary=summary,
                     markdown_details=md,
-                    source_model=f"LLM ({self.llm_client.model})",
+                    source_model=f"Sanitized LLM ({self.llm_client.model})",
                     confidence=0.85,
                 )
             except Exception as e:

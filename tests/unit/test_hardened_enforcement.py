@@ -243,3 +243,31 @@ def test_mikrotik_simple_queue_patch_and_error_handling():
     assert "HTTP 400" in res_err.error
 
 
+def test_mikrotik_tls_defaults_and_explicit_insecure_warning(caplog):
+    import logging
+    cfg_default = GatewayConfig(name="MikroTik Secure", host="192.168.88.1", backend_type=BackendType.MIKROTIK)
+    assert cfg_default.tls_verify is True
+
+    backend = MikroTikBackend(cfg_default, password="test")
+    with patch("requests.Session") as mock_session_cls:
+        mock_sess = MagicMock()
+        mock_session_cls.return_value = mock_sess
+        mock_sess.get.return_value.status_code = 200
+        backend._ensure_firewall_rules = MagicMock()
+        assert backend.connect() is True
+        assert mock_sess.verify is True
+
+    cfg_insecure = GatewayConfig(name="MikroTik Insecure", host="192.168.88.1", backend_type=BackendType.MIKROTIK, tls_verify=False)
+    backend_insecure = MikroTikBackend(cfg_insecure, password="test")
+    with patch("requests.Session") as mock_session_cls:
+        mock_sess = MagicMock()
+        mock_session_cls.return_value = mock_sess
+        mock_sess.get.return_value.status_code = 200
+        backend_insecure._ensure_firewall_rules = MagicMock()
+        with caplog.at_level(logging.WARNING):
+            assert backend_insecure.connect() is True
+            assert mock_sess.verify is False
+            assert "SECURITY WARNING" in caplog.text
+
+
+
