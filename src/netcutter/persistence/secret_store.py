@@ -158,7 +158,7 @@ def _load_or_generate_persistent_key() -> Tuple[bytes, bool]:
     if os.path.exists(plaintext_path):
         try:
             with open(plaintext_path, "rb") as f:
-                raw_key = f.read().strip()
+                raw_key = f.read()
             if len(raw_key) == 32:
                 # If on Windows, migrate to DPAPI immediately and remove plaintext key
                 if _is_windows():
