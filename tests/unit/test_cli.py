@@ -103,27 +103,34 @@ def test_cli_gateways_plain_text():
 
 
 def test_cli_rename_device():
-    # First get a device to rename
-    out_buf = io.StringIO()
-    with redirect_stdout(out_buf):
-        main(["devices", "--json"])
-    devices = json.loads(out_buf.getvalue())
-    assert len(devices) > 0
-    target_mac = devices[0]["mac"]
-    original_name = devices[0]["name"]
+    from netcutter.persistence.database import Database
+    from netcutter.persistence.repository import DeviceRepository
+    from netcutter.domain.models import Device
 
-    try:
-        # Rename it
-        rename_buf = io.StringIO()
-        with redirect_stdout(rename_buf):
-            main(["rename", target_mac, "Test-Renamed-Device", "--json"])
-        result = json.loads(rename_buf.getvalue())
-        assert result["success"] is True
-        assert result["display_name"] == "Test-Renamed-Device"
-    finally:
-        # Restore original name
-        restore_buf = io.StringIO()
-        with redirect_stdout(restore_buf):
-            main(["rename", target_mac, original_name, "--json"])
+    db = Database()
+    repo = DeviceRepository(db)
+
+    # Ensure at least one test device exists in DB (self-contained for fresh CI runners)
+    target_mac = "00:11:22:33:44:99"
+    test_device = Device(
+        display_name="Initial-Test-Device",
+        primary_mac=target_mac,
+        ipv4_addresses=["192.168.1.199"],
+    )
+    repo.upsert(test_device)
+
+    # Rename it via CLI
+    rename_buf = io.StringIO()
+    with redirect_stdout(rename_buf):
+        main(["rename", target_mac, "Test-Renamed-Device", "--json"])
+    result = json.loads(rename_buf.getvalue())
+    assert result["success"] is True
+    assert result["display_name"] == "Test-Renamed-Device"
+
+    # Verify updated in repository
+    updated = repo.get_by_mac(target_mac)
+    assert updated is not None
+    assert updated.display_name == "Test-Renamed-Device"
+
 
 
