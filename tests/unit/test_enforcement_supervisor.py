@@ -5,7 +5,6 @@ mocked enforcement, watchdog auto-restoration, and target isolation.
 """
 import time
 from unittest.mock import MagicMock
-import pytest
 
 from netcutter.backends.base import IGatewayBackend, PolicyExecutionResult
 from netcutter.services.enforcement_supervisor import (

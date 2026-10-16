@@ -6,7 +6,7 @@ from netcutter.persistence.database import Database
 from netcutter.persistence.repository import GatewayRepository, NotificationRepository
 from netcutter.persistence.secret_store import SecretStore
 from netcutter.services.gateway_manager import GatewayManager
-from netcutter.services.health_service import HealthMonitoringService, SubsystemHealth
+from netcutter.services.health_service import HealthMonitoringService
 from netcutter.services.notification_service import NotificationCategory, NotificationService
 
 

@@ -4,9 +4,7 @@ Simulates and tests bandwidth rate shaping and firewall drop behavior.
 """
 from __future__ import annotations
 
-import time
-from typing import Dict, Tuple
-from netcutter.domain.models import Device
+from typing import Tuple
 
 
 class NetworkAcceptanceTester:

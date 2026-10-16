@@ -10,8 +10,7 @@ import logging
 import os
 import re
 import urllib.request
-import urllib.error
-from dataclasses import asdict, dataclass, field
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple

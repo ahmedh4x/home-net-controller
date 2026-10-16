@@ -8,7 +8,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from typing import Any, Dict, List
+from typing import List
 
 from netcutter.diagnostics.health import DiagnosticsService
 from netcutter.domain.models import Device, DomainMatchType, DomainScope, GatewayConfig

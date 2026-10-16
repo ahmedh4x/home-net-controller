@@ -8,10 +8,10 @@ from __future__ import annotations
 import logging
 import os
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 
 from PySide6.QtCore import QObject, QRunnable, QSize, Qt, QThreadPool, QTimer, Signal
-from PySide6.QtGui import QColor, QFont, QIcon, QPixmap
+from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtWidgets import (
     QApplication,
     QFileDialog,
@@ -39,7 +39,6 @@ from netcutter.common.logging import (
 from netcutter.common.paths import get_asset_path
 from netcutter.diagnostics.health import DiagnosticsService
 from netcutter.domain.models import BackendType, Device, GatewayConfig, GatewayStatus
-from netcutter.domain.state_engine import NetworkStateEngine
 from netcutter.persistence.database import Database
 from netcutter.persistence.repository import (
     AuditRepository,

@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 from typing import List, Optional
-from netcutter.domain.models import Device, DevicePolicyState, PolicyStatus
+from netcutter.domain.models import Device, PolicyStatus
 from netcutter.persistence.repository import DeviceRepository
 from netcutter.services.gateway_manager import GatewayManager
 from netcutter.services.identity_engine import IdentityEngine

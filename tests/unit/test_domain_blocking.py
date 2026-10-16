@@ -3,11 +3,6 @@ Unit & Integration Tests for Website & Domain Blocking Subsystem.
 Tests validation, normalization, subdomain matching, precedence, persistence,
 backend enforcement, and TLS SNI extraction.
 """
-import pytest
-from datetime import datetime, timezone
-from pathlib import Path
-
-from netcutter.backends.capabilities import BackendCapabilities
 from netcutter.backends.mock_backend import MockGatewayBackend
 from netcutter.backends.windows_lan import WindowsLanInterceptorBackend
 from netcutter.domain.domain_validator import (

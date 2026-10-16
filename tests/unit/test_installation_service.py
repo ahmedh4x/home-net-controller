@@ -3,7 +3,6 @@ Unit Tests for InstallationService, CapabilityState, and LocalSubnetDiscoveryPro
 """
 import json
 import os
-import pytest
 
 from netcutter.backends.capabilities import (
     BackendCapabilities,

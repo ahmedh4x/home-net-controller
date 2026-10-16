@@ -10,7 +10,6 @@ import ipaddress
 import logging
 import os
 import re
-from datetime import datetime, timezone
 from typing import Dict, List, Optional, Tuple
 import paramiko
 from netcutter.backends.base import (

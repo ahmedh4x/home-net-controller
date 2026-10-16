@@ -13,8 +13,6 @@ from pathlib import Path
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from PySide6.QtCore import QSize, QTimer
-from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QApplication
 
 from netcutter.ui_qt.app_window import NetCutterMainWindow

@@ -5,7 +5,7 @@ automated repair actions, elevation guidance, and architecture selection.
 """
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import Optional
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QColor, QFont
 from PySide6.QtWidgets import (

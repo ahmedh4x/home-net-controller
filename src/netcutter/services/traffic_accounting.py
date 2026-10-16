@@ -13,7 +13,7 @@ import time
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Deque, Dict, List, Optional, Tuple
+from typing import Deque, Dict, List, Optional
 
 from netcutter.domain.models import format_bytes, format_rate, normalize_mac
 

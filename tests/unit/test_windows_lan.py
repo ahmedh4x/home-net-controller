@@ -1,19 +1,15 @@
 """
 Unit and Mock Tests for Windows LAN Off-Path Interceptor Backend.
 """
-from unittest.mock import MagicMock, patch
-import pytest
+from unittest.mock import patch
 
-from netcutter.backends.base import DiscoveredDeviceRaw, ObservedPolicy
 from netcutter.backends.capabilities import BackendCapabilities
 from netcutter.backends.windows_lan import WindowsLanInterceptorBackend
-from netcutter.domain.models import BackendType, GatewayConfig, InternetAccessState, PolicyStatus
+from netcutter.domain.models import InternetAccessState, PolicyStatus
 from netcutter.persistence.database import Database
 from netcutter.persistence.repository import AuditRepository, DeviceRepository, GatewayRepository
 from netcutter.persistence.secret_store import SecretStore
-from netcutter.services.device_service import DeviceService
 from netcutter.services.gateway_manager import GatewayManager
-from netcutter.services.identity_engine import IdentityEngine
 from netcutter.services.policy_service import PolicyService
 
 

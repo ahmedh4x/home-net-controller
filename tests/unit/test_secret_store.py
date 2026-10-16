@@ -3,7 +3,6 @@ Unit Tests for AES-GCM and Windows DPAPI Secret Store.
 """
 import os
 import platform
-import pytest
 from netcutter.persistence.secret_store import SecretStore, _derive_legacy_key
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 

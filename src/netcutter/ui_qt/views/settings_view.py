@@ -3,7 +3,7 @@ Application Settings and Simulation Fault-Injection View for NetCutter.
 """
 from __future__ import annotations
 
-from typing import Callable, Dict, Optional
+from typing import Optional
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import (
     QCheckBox,

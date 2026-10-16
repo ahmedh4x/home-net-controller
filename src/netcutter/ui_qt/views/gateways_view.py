@@ -4,7 +4,7 @@ Manages router connections, credential resolution, and live hardware capability 
 """
 from __future__ import annotations
 
-from typing import Callable, Dict, List, Optional
+from typing import Dict, List, Optional
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import (
     QFrame,
@@ -19,8 +19,7 @@ from PySide6.QtWidgets import (
 )
 
 from netcutter.domain.models import GatewayConfig
-from netcutter.ui_qt.components import PageHeader, StatusBadge
-from netcutter.ui_qt.theme import Theme
+from netcutter.ui_qt.components import PageHeader
 
 
 class GatewaysView(QWidget):

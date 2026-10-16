@@ -3,9 +3,8 @@ Reusable UI Components and Widgets for NetCutter Qt Interface.
 """
 from __future__ import annotations
 
-from typing import Callable, Optional
-from PySide6.QtCore import QPoint, QPropertyAnimation, QRect, Qt, QTimer, Signal
-from PySide6.QtGui import QColor, QFont, QPainter, QPaintEvent
+from typing import Optional
+from PySide6.QtCore import Qt, QTimer, Signal
 from PySide6.QtWidgets import (
     QFrame,
     QHBoxLayout,

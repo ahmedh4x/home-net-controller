@@ -36,16 +36,6 @@ def run_gui():
 
 
 
-def run_legacy_tk():
-    check_platform()
-    import tkinter as tk
-    from netcutter.ui.app import NetCutterApp
-
-    root = tk.Tk()
-    app = NetCutterApp(root)
-    root.mainloop()
-
-
 def run_cli():
     check_platform()
     from netcutter.cli.main import main
@@ -62,9 +52,7 @@ if __name__ == "__main__":
             pass
 
     is_cli_binary = "cli" in Path(sys.argv[0]).stem.lower()
-    if len(sys.argv) > 1 and sys.argv[1] == "--legacy-tk":
-        run_legacy_tk()
-    elif is_cli_binary:
+    if is_cli_binary:
         run_cli()
     elif len(sys.argv) > 1 and sys.argv[1] not in ("--gui", "-g"):
         run_cli()

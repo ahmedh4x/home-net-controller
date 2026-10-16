@@ -10,8 +10,7 @@ from datetime import datetime, timezone
 from typing import Dict, List, Optional, Tuple
 
 from netcutter.backends.base import IGatewayBackend, PolicyExecutionResult
-from netcutter.backends.capabilities import BackendCapabilities
-from netcutter.domain.domain_validator import is_domain_match, normalize_domain, validate_domain
+from netcutter.domain.domain_validator import validate_domain
 from netcutter.domain.models import (
     BlockedDomainEvent,
     DomainBlockingRule,

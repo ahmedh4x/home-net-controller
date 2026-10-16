@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import ctypes
 import dataclasses
-import hashlib
 import json
 import logging
 import os
@@ -21,7 +20,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
-from typing import Callable, Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from netcutter.common.paths import get_app_data_dir, get_asset_path, get_assets_dir
 

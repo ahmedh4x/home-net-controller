@@ -5,8 +5,7 @@ table visualization, empty state illustrations, and policy action triggers.
 """
 from __future__ import annotations
 
-from pathlib import Path
-from typing import Callable, List, Optional
+from typing import List, Optional
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import (

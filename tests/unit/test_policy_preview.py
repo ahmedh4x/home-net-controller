@@ -3,7 +3,7 @@ Unit tests for Policy Preview Engine, conflict warnings, and impact calculations
 """
 from netcutter.backends.capabilities import BackendCapabilities
 from netcutter.backends.mock_backend import MockGatewayBackend
-from netcutter.domain.models import Device, DevicePolicyState, GatewayConfig, InternetAccessState
+from netcutter.domain.models import Device, DevicePolicyState, InternetAccessState
 from netcutter.services.policy_preview import ImpactSeverity, PolicyPreviewEngine, ProposedAction
 
 

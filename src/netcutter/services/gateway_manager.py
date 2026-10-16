@@ -5,9 +5,8 @@ Handles backend lifecycle, credential resolution, and health monitoring.
 from __future__ import annotations
 
 import threading
-from typing import Dict, List, Optional, Tuple
+from typing import Optional, Tuple
 from netcutter.backends.base import IGatewayBackend
-from netcutter.backends.capabilities import BackendCapabilities
 from netcutter.domain.models import BackendType, GatewayConfig, GatewayStatus
 from netcutter.persistence.database import Database
 from netcutter.persistence.repository import GatewayRepository

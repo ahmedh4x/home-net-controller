@@ -5,8 +5,7 @@ active gateway health, quick action triggers, and recent activity.
 """
 from __future__ import annotations
 
-from pathlib import Path
-from typing import Callable, Dict, List, Optional
+from typing import Dict, List, Optional
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import (

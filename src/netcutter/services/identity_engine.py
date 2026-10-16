@@ -5,9 +5,8 @@ Correlates MACs, IPs, DUIDs, Hostnames, and handles MAC Randomization.
 from __future__ import annotations
 
 from datetime import datetime, timezone
-from typing import List, Optional, Tuple
+from typing import List, Optional
 from netcutter.backends.base import DiscoveredDeviceRaw
-from netcutter.domain.events import AuditAction, AuditEvent
 from netcutter.domain.identity import (
     IdentityCorrelationEvent,
     calculate_identity_confidence,

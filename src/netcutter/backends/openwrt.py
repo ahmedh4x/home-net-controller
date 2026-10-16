@@ -4,10 +4,9 @@ OpenWrt Gateway Backend extending Linux Gateway Backend with OpenWrt-specific di
 from __future__ import annotations
 
 import json
-from typing import List, Optional
+from typing import List
 from netcutter.backends.base import DiscoveredDeviceRaw
 from netcutter.backends.linux import LinuxGatewayBackend
-from netcutter.domain.models import GatewayConfig
 
 
 class OpenWrtBackend(LinuxGatewayBackend):

@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
-from typing import Dict, List, Tuple
+from typing import Dict, List
 from netcutter.backends.capabilities import format_capabilities_report
 from netcutter.services.gateway_manager import GatewayManager
 

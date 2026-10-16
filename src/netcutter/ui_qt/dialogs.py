@@ -21,14 +21,13 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from netcutter.domain.models import Device, DevicePolicyState, GatewayConfig, InternetAccessState
+from netcutter.domain.models import Device, GatewayConfig
 from netcutter.services.policy_preview import (
     ImpactSeverity,
     PolicyPreviewEngine,
     PolicyPreviewReport,
     ProposedAction,
 )
-from netcutter.ui_qt.components import StatusBadge
 from netcutter.ui_qt.theme import Theme
 
 

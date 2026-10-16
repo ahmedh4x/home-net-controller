@@ -3,7 +3,6 @@ Unit tests for MockGatewayBackend deterministic simulation and fault injection h
 """
 from netcutter.backends.base import DiscoveredDeviceRaw
 from netcutter.backends.mock_backend import MockGatewayBackend
-from netcutter.domain.models import InternetAccessState
 
 
 def test_mock_backend_timeout_fault_injection():

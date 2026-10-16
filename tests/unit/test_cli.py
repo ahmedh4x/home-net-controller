@@ -6,7 +6,7 @@ from __future__ import annotations
 import io
 import json
 import sys
-from contextlib import redirect_stdout, redirect_stderr
+from contextlib import redirect_stdout
 from unittest.mock import patch
 import pytest
 

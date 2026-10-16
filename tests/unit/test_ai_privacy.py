@@ -3,7 +3,7 @@ Unit tests for AI Assistant privacy guarantees and opt-in network egress.
 """
 import os
 from unittest.mock import MagicMock
-from netcutter.domain.models import Device, DeviceCategory, DevicePolicyState, GatewayConfig, BackendType
+from netcutter.domain.models import Device, DeviceCategory, GatewayConfig, BackendType
 from netcutter.services.ai_assistant import AIAssistantService
 
 

@@ -3,9 +3,7 @@ Unit tests for Device Classification and Evidence-Based Identity Engine.
 Verifies all 10 DeviceCategory classifications, 4-tier evidence hierarchy,
 randomized MAC handling, and repository persistence.
 """
-import pytest
-
-from netcutter.domain.identity import classify_device, resolve_vendor_by_mac
+from netcutter.domain.identity import classify_device
 from netcutter.domain.models import ConfidenceLevel, Device, DeviceCategory
 from netcutter.persistence.database import Database
 from netcutter.persistence.repository import DeviceRepository

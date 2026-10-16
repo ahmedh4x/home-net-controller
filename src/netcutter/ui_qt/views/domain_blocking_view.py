@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from typing import List, Optional
 from PySide6.QtCore import Qt, Signal
-from PySide6.QtGui import QColor, QPixmap
+from PySide6.QtGui import QPixmap
 from netcutter.common.paths import get_asset_path
 from PySide6.QtWidgets import (
     QComboBox,
@@ -27,7 +27,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from netcutter.domain.domain_validator import normalize_domain, validate_domain
+from netcutter.domain.domain_validator import validate_domain
 from netcutter.domain.models import (
     BlockedDomainEvent,
     Device,

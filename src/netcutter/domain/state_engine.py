@@ -8,10 +8,10 @@ import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
-from typing import List, Optional
+from typing import Optional
 
 from netcutter.backends.capabilities import BackendCapabilities
-from netcutter.domain.models import DevicePolicyState, InternetAccessState
+from netcutter.domain.models import DevicePolicyState
 
 
 class OperationState(str, Enum):

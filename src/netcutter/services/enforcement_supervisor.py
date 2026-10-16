@@ -10,14 +10,12 @@ import os
 import sys
 import threading
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Optional, Tuple
 
 from netcutter.backends.base import IGatewayBackend, PolicyExecutionResult
-from netcutter.backends.capabilities import BackendCapabilities
-from netcutter.backends.windows_lan import WindowsLanInterceptorBackend
 from netcutter.domain.models import normalize_mac
 from netcutter.services.local_discovery import LocalSubnetDiscoveryProvider
 

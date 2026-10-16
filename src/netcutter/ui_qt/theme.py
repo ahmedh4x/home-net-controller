@@ -4,8 +4,6 @@ Theme: Midnight Obsidian with Electric Cyan, Neon Violet, and Emerald accents.
 """
 from __future__ import annotations
 
-from PySide6.QtGui import QColor, QFont
-
 
 class Theme:
     """Design tokens and visual language constants."""

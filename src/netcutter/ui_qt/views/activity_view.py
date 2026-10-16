@@ -22,7 +22,7 @@ from PySide6.QtWidgets import (
 )
 
 from netcutter.domain.models import Device, format_bytes, format_rate
-from netcutter.ui_qt.components import PageHeader, StatusBadge
+from netcutter.ui_qt.components import PageHeader
 from netcutter.ui_qt.models import BandwidthTableModel
 from netcutter.ui_qt.theme import Theme
 

@@ -3,7 +3,6 @@ Automated GUI and UX Tests for NetCutter PySide6 Interface.
 Uses pytest-qt to verify application shell, responsive page navigation, table filtering, and dialogs.
 """
 import os
-from pathlib import Path
 import pytest
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QLabel

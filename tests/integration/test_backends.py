@@ -7,7 +7,6 @@ from netcutter.backends.capabilities import (
     format_capabilities_report,
 )
 from netcutter.backends.linux import LinuxGatewayBackend
-from netcutter.backends.mikrotik import MikroTikBackend
 from netcutter.backends.mock_backend import MockGatewayBackend
 from netcutter.domain.models import BackendType, GatewayConfig
 

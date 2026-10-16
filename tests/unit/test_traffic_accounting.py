@@ -2,8 +2,6 @@
 Unit Tests for TrafficAccountingService (adapted from LANtern-Control).
 """
 import time
-from datetime import datetime, timezone
-import pytest
 
 from netcutter.domain.models import format_bytes, format_rate
 from netcutter.services.traffic_accounting import (

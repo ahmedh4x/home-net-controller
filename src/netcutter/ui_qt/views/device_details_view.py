@@ -18,7 +18,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from netcutter.domain.models import Device, InternetAccessState, PolicyStatus
+from netcutter.domain.models import Device
 from netcutter.ui_qt.components import PageHeader, StatusBadge
 from netcutter.ui_qt.theme import Theme
 

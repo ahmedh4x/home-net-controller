@@ -79,6 +79,7 @@ docs/screenshots/notifications.png
 docs/screenshots/policies.png
 graphify-out/
 .agents/
+*.pdf
 
 
 

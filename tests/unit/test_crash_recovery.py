@@ -6,8 +6,7 @@ and non-destructive exception hook registration.
 import os
 import sys
 import threading
-from pathlib import Path
-import pytest
+
 
 from netcutter.common.crash_handler import (
     _write_crash_report_file,

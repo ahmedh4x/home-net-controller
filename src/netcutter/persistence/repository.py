@@ -25,7 +25,6 @@ from netcutter.domain.models import (
     PolicyStatus,
 )
 from netcutter.domain.events import AuditAction, AuditEvent
-from netcutter.domain.identity import IdentityCorrelationEvent
 from netcutter.persistence.database import Database
 
 

@@ -5,15 +5,13 @@ Prevents unexplained silent crashes, logs full sanitized diagnostics, and presen
 from __future__ import annotations
 
 import logging
-import os
 import sys
 import threading
 import traceback
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Callable, Optional
 
-from netcutter.common.logging import get_ring_buffer, redact_sensitive_text
+from netcutter.common.logging import redact_sensitive_text
 from netcutter.common.paths import get_app_data_dir
 
 logger = logging.getLogger("netcutter.crash")

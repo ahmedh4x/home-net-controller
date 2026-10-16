@@ -6,9 +6,9 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime, timezone
-from typing import Optional, Tuple
+from typing import Optional
 
-from netcutter.backends.base import IGatewayBackend, PolicyExecutionResult
+from netcutter.backends.base import PolicyExecutionResult
 from netcutter.domain.events import AuditAction, AuditEvent
 from netcutter.domain.models import (
     Device,
