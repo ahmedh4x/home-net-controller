@@ -259,7 +259,7 @@ class NetCutterMainWindow(QMainWindow):
         # --- Sidebar ---
         sidebar = QFrame()
         sidebar.setObjectName("SidebarFrame")
-        sidebar.setFixedWidth(230)
+        sidebar.setFixedWidth(245)
         s_layout = QVBoxLayout(sidebar)
         s_layout.setContentsMargins(14, 20, 14, 16)
         s_layout.setSpacing(6)
@@ -1265,3 +1265,16 @@ class NetCutterMainWindow(QMainWindow):
                 except Exception:
                     pass
             event.accept()
+
+
+def run_gui():
+    """Package entry point to launch the Home Net Controller PySide6 GUI."""
+    import sys
+    app = QApplication.instance() or QApplication(sys.argv)
+    app.setApplicationName("Home Net Controller")
+    from netcutter.ui_qt.theme import Theme
+    app.setStyleSheet(Theme.get_stylesheet())
+    window = NetCutterMainWindow()
+    window.show()
+    return app.exec()
+

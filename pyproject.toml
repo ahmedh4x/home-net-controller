@@ -43,9 +43,9 @@ dev = [
 
 [project.scripts]
 hnc = "netcutter.cli.main:main"
-home-net-controller = "main:run_gui"
+home-net-controller = "netcutter.ui_qt.app_window:run_gui"
 netcutter = "netcutter.cli.main:main"
-netcutter-gui = "main:run_gui"
+netcutter-gui = "netcutter.ui_qt.app_window:run_gui"
 
 [tool.setuptools.packages.find]
 where = ["src"]

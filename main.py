@@ -13,22 +13,15 @@ sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 def run_gui():
     try:
-        from PySide6.QtWidgets import QApplication
+        from netcutter.ui_qt import run_gui as _run_gui
     except ImportError as exc:
         raise SystemExit(
-            "NetCutter's desktop GUI requires PySide6. "
+            "Home Net Controller desktop GUI requires PySide6. "
             "Install dependencies with: python -m pip install -r requirements.txt"
         ) from exc
 
-    from netcutter.ui_qt.app_window import NetCutterMainWindow
-    from netcutter.ui_qt.theme import Theme
+    sys.exit(_run_gui())
 
-    app = QApplication.instance() or QApplication(sys.argv)
-    app.setApplicationName("NetCutter")
-    app.setStyleSheet(Theme.get_stylesheet())
-    window = NetCutterMainWindow()
-    window.show()
-    sys.exit(app.exec())
 
 
 def run_legacy_tk():
