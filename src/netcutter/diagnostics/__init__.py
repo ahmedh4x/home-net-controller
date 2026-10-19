@@ -6,11 +6,9 @@ from netcutter.diagnostics.health import (
     DiagnosticsReport,
     DiagnosticsService,
 )
-from netcutter.diagnostics.network_test import NetworkAcceptanceTester
 
 __all__ = [
     "DiagnosticCheck",
     "DiagnosticsReport",
     "DiagnosticsService",
-    "NetworkAcceptanceTester",
 ]

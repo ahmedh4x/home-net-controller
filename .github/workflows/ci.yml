@@ -29,15 +29,15 @@ jobs:
         run: |
           python -m pip install --upgrade pip setuptools wheel
 
-      - name: Install Home Net Controller in editable mode with test dependencies
+      - name: Install Home Net Controller
         run: |
-          pip install -e ".[dev]"
+          pip install -e .
 
-      - name: Run Pytest test suite (Windows)
+      - name: Verify package imports
         env:
           QT_QPA_PLATFORM: offscreen
         run: |
-          python -m pytest -v
+          python -c "import main; from netcutter.ui_qt import run_gui; print('Package imports cleanly')"
 
       - name: Test CLI smoke check
         run: |

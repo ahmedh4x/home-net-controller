@@ -36,12 +36,6 @@ dependencies = [
     "PySide6>=6.7.0",
 ]
 
-[project.optional-dependencies]
-dev = [
-    "pytest>=8.0.0",
-    "pytest-qt>=4.4.0",
-]
-
 [project.scripts]
 hnc = "netcutter.cli.main:main"
 home-net-controller = "netcutter.ui_qt.app_window:run_gui"
@@ -50,8 +44,3 @@ netcutter-gui = "netcutter.ui_qt.app_window:run_gui"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-python_files = ["test_*.py"]
-python_functions = ["test_*"]

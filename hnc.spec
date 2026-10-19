@@ -6,6 +6,8 @@ from PyInstaller.utils.hooks import collect_submodules, collect_data_files
 block_cipher = None
 
 src_path = Path('src').resolve()
+if str(src_path) not in sys.path:
+    sys.path.insert(0, str(src_path))
 
 # Collect all netcutter submodules
 netcutter_submodules = collect_submodules('netcutter')
